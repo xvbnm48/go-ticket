@@ -3,14 +3,17 @@ package db
 import (
 	"database/sql"
 
-	_ "github.com/mattn/go-sqlite3"
+	//_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
 
-func InitDB(filePath string) error {
+func InitDB() error {
 	var err error
-	DB, err = sql.Open("sqlite3", filePath)
+	connStr := "postgresql://fariz:fariz@localhost:5432/tikecting_master?sslmode=disable"
+	DB, err = sql.Open("postgres", connStr)
+	//DB, err = sql.Open("sqlite3", filePath)
 	if err != nil {
 		return err
 	}
@@ -20,7 +23,7 @@ func InitDB(filePath string) error {
 func createTable() error {
 	query := `
 	CREATE TABLE IF NOT EXISTS tickets (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id SERIAL PRIMARY KEY,
 		title TEXT,
 		content TEXT
 	);`

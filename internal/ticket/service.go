@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/xvbnm48/golang-terminal-learn/internal/db"
+	"strconv"
 )
 
-func InitDbService(filePath string) error {
-	fmt.Println(filePath)
-	return db.InitDB(filePath)
+func InitDbService() error {
+	fmt.Println()
+	return db.InitDB()
 }
 
 func CloseDb() {
@@ -23,7 +24,7 @@ func CreateTicket(scanner *bufio.Scanner) {
 	scanner.Scan()
 	content := scanner.Text()
 
-	query := `INSERT INTO tickets (title, content) VALUES (?, ?)`
+	query := `INSERT INTO tickets (title, content) VALUES ($1,$2)`
 	_, err := db.DB.Exec(query, title, content)
 	if err != nil {
 		fmt.Println("Error create ticket")
@@ -69,4 +70,32 @@ func GetAllTicket(scanner *bufio.Scanner) {
 			return
 		}
 	}
+}
+
+func DeleteTicketById(scanner *bufio.Scanner) {
+	for {
+		fmt.Println("\n==============================")
+		fmt.Println("     Hapus Tiket")
+		fmt.Println("==============================")
+		fmt.Print("Masukkan ID tiket yang akan dihapus (atau ketik 'kembali' untuk kembali ke menu utama): ")
+		scanner.Scan()
+		idStr := scanner.Text()
+		if idStr == "kembali" {
+			return
+		}
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			fmt.Println("ID tidak valid")
+			continue
+		}
+		query := `DELETE FROM tickets WHERE id = ?`
+		_, err = db.DB.Exec(query, id)
+		if err != nil {
+			fmt.Println("Error delete ticket")
+			return
+		}
+		fmt.Println("Tiket berhasil dihapus")
+		return
+	}
+
 }

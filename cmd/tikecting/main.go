@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	err := ticket.InitDbService("../../ticket.db")
+	err := ticket.InitDbService()
 	if err != nil {
 		fmt.Println("Error init db")
 		return
@@ -31,11 +31,14 @@ func main() {
 			ticket.CreateTicket(scanner)
 		case "2":
 			ticket.GetAllTicket(scanner)
+		case "3":
+			ticket.DeleteTicketById(scanner)
 		case "4":
 			fmt.Println("Keluar")
 			os.Exit(0)
 		default:
 			fmt.Println("Opsi tidak valid")
+
 		}
 	}
 }
